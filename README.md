@@ -17,7 +17,3 @@ Fill in the form to login or click "You do not have a account!" to redirect to R
 
 Fill in the form to register then login.
 
-## Production
-
-
-Deploy link: [http://registerform.runasp.net](http://registerform.runasp.net/)
