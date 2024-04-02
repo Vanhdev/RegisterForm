@@ -10,7 +10,7 @@ using RegisterForm.DatabaseContext;
 namespace RegisterForm.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240402145106_InitialCreate")]
+    [Migration("20240402204957_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,11 +27,11 @@ namespace RegisterForm.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
 

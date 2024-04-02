@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using RegisterForm.DatabaseContext;
 using RegisterForm.Models;
 using System.Web;
+using System.Net;
+using System.Net.Mail;
 
 namespace RegisterForm.Controllers
 {
@@ -29,12 +31,12 @@ namespace RegisterForm.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([Bind("Id,UserName,Password,ConfirmPassword")] User userInfo)
+        public async Task<IActionResult> Login([Bind("Id,Email,Password,ConfirmPassword")] User userInfo)
         {
-            var user = await FindUser(userInfo.UserName);
+            var user = await FindUser(userInfo.Email);
             if (user == null)
             {
-                ViewBag.message = "UserName is wrong!";
+                ViewBag.message = "Email is wrong!";
                 return View("Index");
             }
 
@@ -56,16 +58,26 @@ namespace RegisterForm.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserName,Password,ConfirmPassword")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Email,Password,ConfirmPassword")] User user)
         {
-            if (await UserExists(user.UserName))
+            if (await UserExists(user.Email))
             {
-                ViewBag.message = "UserName existed!";
+                ViewBag.message = "Email existed!";
                 return View("Register");
             }
             user.Password = sha256(user.Password);
             _context.Add(user);
             await _context.SaveChangesAsync();
+
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential("vietanhtran2069@gmail.com", "ylkv rnol cwpq hhsi"),
+                EnableSsl = true,
+            };
+
+            smtpClient.Send("vietanhtran2069@gmail.com", user.Email, "Confirm Register", "Thank you for registration");
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -75,14 +87,14 @@ namespace RegisterForm.Controllers
             return Redirect("/");
         }
 
-        private async Task<bool> UserExists(string userName)
+        private async Task<bool> UserExists(string Email)
         {
-            return await FindUser(userName) != null;
+            return await FindUser(Email) != null;
         }
 
-        private async Task<User?> FindUser(string userName)
+        private async Task<User?> FindUser(string Email)
         {
-            return await _context.User?.FirstOrDefaultAsync(e => e.UserName == userName);
+            return await _context.User?.FirstOrDefaultAsync(e => e.Email == Email);
         }
         private string sha256(string randomString)
         {
