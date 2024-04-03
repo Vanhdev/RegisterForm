@@ -23,6 +23,19 @@ Run command
 dotnet ef database update
 ```
 
+## Email
+
+Change smtp config in appsettings.Development.json and appsettings.json
+
+```
+"MailConfig": {
+  "Host": [smtp_host],
+  "Port": [smtp_port],
+  "UserName": [user_name],
+  "Password": [password]
+},
+```
+
 ## Introduction
 
 Click "login" to redirect to Login page.
