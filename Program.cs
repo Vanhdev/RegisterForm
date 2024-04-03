@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RegisterForm.DatabaseContext;
+using RegisterForm.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddSession(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddTransient<IMailService, MailService>();
 
 var app = builder.Build();
 

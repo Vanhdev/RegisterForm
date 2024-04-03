@@ -11,16 +11,19 @@ using RegisterForm.Models;
 using System.Web;
 using System.Net;
 using System.Net.Mail;
+using RegisterForm.Services;
 
 namespace RegisterForm.Controllers
 {
     public class LoginController : Controller
     {
         private readonly DataContext _context;
+        private readonly IMailService _mailService;
 
-        public LoginController(DataContext context)
+        public LoginController(DataContext context, IMailService mailService)
         {
             _context = context;
+            _mailService = mailService;
         }
 
         // GET: Users
@@ -69,14 +72,7 @@ namespace RegisterForm.Controllers
             _context.Add(user);
             await _context.SaveChangesAsync();
 
-            var smtpClient = new SmtpClient("smtp.gmail.com")
-            {
-                Port = 587,
-                Credentials = new NetworkCredential("vietanhtran2069@gmail.com", "ylkv rnol cwpq hhsi"),
-                EnableSsl = true,
-            };
-
-            smtpClient.Send("vietanhtran2069@gmail.com", user.Email, "Confirm Register", "Thank you for registration");
+            await _mailService.SendRegisterMail("vietanhtran2069@gmail.com", user.Email);
 
             return RedirectToAction(nameof(Index));
         }
