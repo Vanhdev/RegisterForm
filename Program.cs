@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using RegisterForm.Configs;
 using RegisterForm.DatabaseContext;
 using RegisterForm.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<MailConfig>(
+    builder.Configuration.GetSection("MailConfig"));
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
